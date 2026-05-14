@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fehler – ExamByte</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Fehler</h4>
+        <p th:text="${fehler}">Ein unbekannter Fehler ist aufgetreten.</p>
+        <hr>
+        <a href="javascript:history.back()" class="btn btn-secondary btn-sm">Zurück</a>
+    </div>
+</div>
+</body>
+</html>

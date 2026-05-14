@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>MC-Aufgabe hinzufügen – ExamByte</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Organisator"><em>Exam</em>Byte</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
+                aria-controls="nav" aria-expanded="false" aria-label="Navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="/Organisator/CreateTest">Test erstellen</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Aufgabenliste">Testvorschau</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Ergebnisstandseite">Ergebnisse</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Korrekturstandseite">Korrekturstatus</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Freitextantworten">Freitextantworten</a></li>
+            </ul>
+            <a class="nav-link" href="/logout">Abmelden</a>
+        </div>
+    </div>
+</nav>
+<div class="page-container-narrow">
+    <div class="page-header">
+        <p class="page-eyebrow">Test: <span th:text="${test.testName}"></span></p>
+        <h1>Multiple-Choice-Aufgabe</h1>
+    </div>
+    <div class="card">
+        <div class="card-header">Neue Aufgabe</div>
+        <div class="card-body">
+            <form th:action="@{/Organisator/Aufgabenliste/Mc}" method="post" th:object="${neueAufgabe}">
+                <input type="hidden" name="testId" th:value="${test.id}">
+                <div class="mb-3">
+                    <label for="titel" class="form-label">Titel</label>
+                    <input type="text" class="form-control" id="titel" th:field="*{titel}" placeholder="z.B. Frage zu OOP" required>
+                </div>
+                <div class="mb-3">
+                    <label for="beschreibung" class="form-label">Fragestellung <small class="text-muted">(HTML erlaubt)</small></label>
+                    <textarea class="form-control" id="beschreibung" th:field="*{beschreibung}" rows="3" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="maxPunkte" class="form-label">Maximale Punktzahl</label>
+                    <input type="number" class="form-control" id="maxPunkte" th:field="*{maxPunkte}" min="1" step="1" required>
+                </div>
+                <div class="mb-3">
+                    <label for="antwortOptionenText" class="form-label">Antwortmöglichkeiten <small class="text-muted">(kommagetrennt)</small></label>
+                    <input type="text" class="form-control" id="antwortOptionenText" th:field="*{antwortOptionenText}"
+                           placeholder="z.B. Norderney, Ameland, Texel, Pellworm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="richtigeAntwortenText" class="form-label">Korrekte Antworten <small class="text-muted">(exakt wie oben, kommagetrennt)</small></label>
+                    <input type="text" class="form-control" id="richtigeAntwortenText" th:field="*{richtigeAntwortenText}"
+                           placeholder="z.B. Norderney, Pellworm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="erklaerung" class="form-label">Lösungserklärung <small class="text-muted">(nach Testende sichtbar)</small></label>
+                    <textarea class="form-control" id="erklaerung" th:field="*{erklaerung}" rows="2"></textarea>
+                </div>
+                <div style="display:flex; gap:0.75rem; padding-top:0.5rem; border-top:1px solid var(--border); margin-top:0.5rem;">
+                    <button type="submit" class="btn btn-primary">Aufgabe hinzufügen</button>
+                    <a href="/Organisator/Aufgabenliste" class="btn btn-secondary">Abbrechen</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

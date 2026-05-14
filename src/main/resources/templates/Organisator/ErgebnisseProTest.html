@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Testergebnisse – ExamByte</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Organisator"><em>Exam</em>Byte</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
+                aria-controls="nav" aria-expanded="false" aria-label="Navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="/Organisator/CreateTest">Test erstellen</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Aufgabenliste">Testvorschau</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Ergebnisstandseite">Ergebnisse</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Korrekturstandseite">Korrekturstatus</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Freitextantworten">Freitextantworten</a></li>
+            </ul>
+            <a class="nav-link" href="/logout">Abmelden</a>
+        </div>
+    </div>
+</nav>
+<div class="page-container">
+    <div class="page-header" style="display:flex; justify-content:space-between; align-items:flex-end;">
+        <div>
+            <p class="page-eyebrow">Organisator · Ergebnisse</p>
+            <h1 th:text="${test.testName}"></h1>
+            <p class="mono" style="font-size:0.78rem;" th:text="'Max. ' + ${test.maxPunkteTest} + ' Pkt.  ·  Ende: ' + ${#temporals.format(test.endZeit, 'dd.MM.yyyy HH:mm')}"></p>
+        </div>
+        <a href="/Organisator/Ergebnisstandseite" class="btn btn-secondary btn-sm">← Zurück</a>
+    </div>
+    <div th:if="${erfolg}" class="alert alert-success" th:text="${erfolg}"></div>
+    <div th:if="${fehler}"  class="alert alert-danger"  th:text="${fehler}"></div>
+    <div th:if="${#lists.isEmpty(ergebnisse)}" class="alert alert-info">Noch keine Abgaben für diesen Test.</div>
+    <table th:if="${!#lists.isEmpty(ergebnisse)}" class="table" aria-label="Ergebnisse">
+        <thead><tr>
+            <th scope="col">Studierende:r</th>
+            <th scope="col">Punkte</th>
+            <th scope="col">Prozent</th>
+            <th scope="col">Ergebnis</th>
+            <th scope="col"></th>
+        </tr></thead>
+        <tbody>
+        <tr th:each="e : ${ergebnisse}">
+            <td class="mono" th:text="${e.abgabe.studentLogin}"></td>
+            <td class="mono" th:text="${#numbers.formatDecimal(e.gesamtPunkte,1,1)}"></td>
+            <td class="mono" th:text="${#numbers.formatDecimal(test.maxPunkteTest > 0 ? (e.gesamtPunkte / test.maxPunkteTest * 100) : 0, 1, 1)} + '%'"></td>
+            <td>
+                <span th:if="${e.bestanden}"  class="badge bg-success">Bestanden</span>
+                <span th:if="${!e.bestanden}" class="badge bg-danger">Nicht bestanden</span>
+                <div th:if="${e.abgabe.nichtBestandenBegruendung != null}"
+                     class="text-muted" style="font-size:0.76rem;" th:text="${e.abgabe.nichtBestandenBegruendung}"></div>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-danger"
+                        th:data-student="${e.abgabe.studentLogin}"
+                        th:data-testid="${test.id}"
+                        onclick="openModal(this)">Nicht bestanden markieren</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="nbModal" tabindex="-1" aria-labelledby="nbLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border:1px solid var(--border); border-radius:var(--radius-lg);">
+            <div class="modal-header" style="border-bottom:1px solid var(--border);">
+                <h5 class="modal-title" id="nbLabel" style="font-family:var(--font-body); font-size:1rem;">Nicht bestanden markieren</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+            </div>
+            <form id="nbForm" method="post">
+                <div class="modal-body">
+                    <label for="begruendung" class="form-label">Begründung</label>
+                    <textarea class="form-control" id="begruendung" name="begruendung" rows="3" required></textarea>
+                </div>
+                <div class="modal-footer" style="border-top:1px solid var(--border);">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <button type="submit" class="btn btn-danger">Bestätigen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function openModal(btn) {
+        const s = btn.getAttribute('data-student');
+        const t = btn.getAttribute('data-testid');
+        document.getElementById('nbForm').action = '/Organisator/Ergebnisstandseite/' + t + '/' + s + '/nichtbestanden';
+        new bootstrap.Modal(document.getElementById('nbModal')).show();
+    }
+</script>
+</body>
+</html>

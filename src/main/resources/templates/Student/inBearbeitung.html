@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Testvorschau – ExamByte</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Organisator">Exam<span>Byte</span></a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/Organisator/Aufgabenliste">← Zurück zur Liste</a>
+        </div>
+    </div>
+</nav>
+
+<div class="page-container">
+    <div class="page-header">
+        <p class="page-eyebrow">Testvorschau</p>
+        <h1 th:text="${wochenTest.testName}">Testname</h1>
+        <p class="mono">
+            Start: <span th:text="${#temporals.format(wochenTest.startZeit, 'dd.MM.yyyy HH:mm')}"></span>
+            &ensp;·&ensp;
+            Ende: <span th:text="${#temporals.format(wochenTest.endZeit, 'dd.MM.yyyy HH:mm')}"></span>
+            &ensp;·&ensp;
+            Veröffentlichung: <span th:text="${#temporals.format(wochenTest.veroeffentlichung, 'dd.MM.yyyy HH:mm')}"></span>
+        </p>
+    </div>
+
+    <div th:if="${#lists.isEmpty(aufgaben)}" class="alert alert-info">
+        Dieser Test hat noch keine Aufgaben.
+    </div>
+
+    <div th:each="aufgabe, iterStat : ${aufgaben}" class="question-card">
+        <p class="question-number">
+            Aufgabe <span th:text="${iterStat.index + 1}"></span>
+            &ensp;·&ensp;
+            <span th:text="${aufgabe.istMultipleChoice() ? 'Multiple Choice' : 'Freitext'}"></span>
+            &ensp;·&ensp;
+            <span th:text="${aufgabe.maxPunkte}"></span> Punkte
+        </p>
+        <p class="question-title" th:text="${aufgabe.titel}"></p>
+
+        <div th:utext="${aufgabe.beschreibung}" style="font-size: 0.9rem;"></div>
+
+        <div th:if="${aufgabe.istMultipleChoice()}" style="margin-top: 1rem;">
+            <p class="page-eyebrow mb-1">Antwortmöglichkeiten</p>
+            <ul style="font-size: 0.88rem;">
+                <li th:each="option : ${aufgabe.antwortOptionen}" th:text="${option}"></li>
+            </ul>
+            <p style="font-size: 0.85rem;">
+                <strong>Korrekt:</strong>
+                <span th:text="${aufgabe.richtigeAntworten}"></span>
+            </p>
+        </div>
+
+        <div th:if="${aufgabe.erklaerung != null and !aufgabe.erklaerung.isBlank()}"
+             class="alert alert-success" style="margin-top: 1rem;">
+            <strong>Lösungserklärung:</strong> <span th:text="${aufgabe.erklaerung}"></span>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 mt-4 mb-5">
+        <a th:href="@{/Organisator/Aufgabenliste/{id}/Mc(id=${wochenTest.id})}"
+           class="btn btn-outline-primary">+ MC-Aufgabe hinzufügen</a>
+        <a th:href="@{/Organisator/Aufgabenliste/{id}/Text(id=${wochenTest.id})}"
+           class="btn btn-outline-secondary">+ Freitext-Aufgabe hinzufügen</a>
+    </div>
+</div>
+
+<script th:src="@{/css/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

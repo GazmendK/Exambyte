@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Organisator – ExamByte</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Organisator"><em>Exam</em>Byte</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
+                aria-controls="nav" aria-expanded="false" aria-label="Navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="/Organisator/CreateTest">Test erstellen</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Aufgabenliste">Testvorschau</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Ergebnisstandseite">Ergebnisse</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Korrekturstandseite">Korrekturstatus</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Freitextantworten">Freitextantworten</a></li>
+            </ul>
+            <a class="nav-link" href="/logout">Abmelden</a>
+        </div>
+    </div>
+</nav>
+<div class="page-container">
+    <div class="page-header">
+        <p class="page-eyebrow">Organisator</p>
+        <h1>Dashboard</h1>
+    </div>
+    <div class="dashboard-grid">
+        <a href="/Organisator/CreateTest" class="dash-card" style="text-decoration:none; color:inherit;">
+            <span class="dash-card-label">Verwaltung</span>
+            <h3>Test erstellen</h3>
+            <p>Neuen Test anlegen, Zeiten festlegen und Aufgaben hinzufügen.</p>
+            <span class="btn btn-primary btn-sm" style="width:fit-content;">Öffnen →</span>
+        </a>
+        <a href="/Organisator/Aufgabenliste" class="dash-card" style="text-decoration:none; color:inherit;">
+            <span class="dash-card-label">Vorschau</span>
+            <h3>Testvorschau</h3>
+            <p>Tests und Aufgaben ansehen, wie sie für Studierende erscheinen.</p>
+            <span class="btn btn-secondary btn-sm" style="width:fit-content;">Öffnen →</span>
+        </a>
+        <a href="/Organisator/Ergebnisstandseite" class="dash-card" style="text-decoration:none; color:inherit;">
+            <span class="dash-card-label">Bewertung</span>
+            <h3>Ergebnisse</h3>
+            <p>Testergebnisse einsehen, Punkte anpassen, Tests als nicht bestanden markieren.</p>
+            <span class="btn btn-secondary btn-sm" style="width:fit-content;">Öffnen →</span>
+        </a>
+        <a href="/Organisator/Korrekturstandseite" class="dash-card" style="text-decoration:none; color:inherit;">
+            <span class="dash-card-label">Fortschritt</span>
+            <h3>Korrekturstatus</h3>
+            <p>Übersicht über noch offene Freitext-Korrekturen.</p>
+            <span class="btn btn-secondary btn-sm" style="width:fit-content;">Öffnen →</span>
+        </a>
+        <a href="/Organisator/Freitextantworten" class="dash-card" style="text-decoration:none; color:inherit;">
+            <span class="dash-card-label">Analyse</span>
+            <h3>Freitextantworten</h3>
+            <p>Sortierte Übersicht aller Antworten zur Erkennung von Ähnlichkeiten.</p>
+            <span class="btn btn-secondary btn-sm" style="width:fit-content;">Öffnen →</span>
+        </a>
+    </div>
+</div>
+</body>
+</html>

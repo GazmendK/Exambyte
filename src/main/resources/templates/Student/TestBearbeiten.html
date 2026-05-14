@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${test.testName} + ' – ExamByte'">Test – ExamByte</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Student">ExamByte</a>
+        <span class="navbar-text text-white">
+            Endzeitpunkt: <strong th:text="${#temporals.format(test.endZeit, 'dd.MM.yyyy HH:mm')}"></strong>
+        </span>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h1 th:text="${test.testName}" class="mb-1"></h1>
+
+    <div th:if="${beendet}" class="alert alert-warning" role="alert">
+        <strong>Dieser Test ist beendet.</strong> Sie können keine Änderungen mehr vornehmen.
+    </div>
+
+    <form th:action="@{/Student/test/{id}/submit(id=${test.id})}" method="post"
+          th:id="${'testForm_' + test.id}">
+
+        <div th:each="aufgabe, iterStat : ${test.aufgaben}" class="card mb-4">
+            <div class="card-header">
+                <strong>Aufgabe <span th:text="${iterStat.index + 1}"></span></strong>
+                – <span th:text="${aufgabe.titel}"></span>
+                <span class="float-end text-muted small">
+                    Max. <span th:text="${aufgabe.maxPunkte}"></span> Punkte
+                </span>
+            </div>
+            <div class="card-body">
+                <!-- HTML aus Organisator darf unescaped angezeigt werden -->
+                <p th:utext="${aufgabe.beschreibung}"></p>
+
+                <!-- Multiple Choice -->
+                <div th:if="${aufgabe instanceof T(com.example.exambytel9.geschaeftslogik.MultipleChoice)}">
+                    <fieldset th:disabled="${beendet}">
+                        <legend class="visually-hidden" th:text="${aufgabe.titel}"></legend>
+                        <div th:each="option : ${aufgabe.antwortOptionen}" class="form-check">
+                            <input class="form-check-input" type="checkbox"
+                                   th:id="${'opt_' + aufgabe.id + '_' + optionStat.index}"
+                                   th:name="${'answer_' + aufgabe.id}"
+                                   th:value="${option}"
+                                   th:checked="${abgabe != null and abgabe.mcAntworten[aufgabe.id] != null and abgabe.mcAntworten[aufgabe.id].contains(option)}"
+                                   th:disabled="${beendet}">
+                            <label class="form-check-label"
+                                   th:for="${'opt_' + aufgabe.id + '_' + optionStat.index}"
+                                   th:text="${option}"></label>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <!-- Freitext -->
+                <div th:if="${aufgabe instanceof T(com.example.exambytel9.geschaeftslogik.Freitext)}">
+                    <label th:for="${'freitext_' + aufgabe.id}" class="form-label visually-hidden"
+                           th:text="${aufgabe.titel}"></label>
+                    <textarea class="form-control"
+                              th:id="${'freitext_' + aufgabe.id}"
+                              th:name="${'answer_' + aufgabe.id}"
+                              rows="5"
+                              th:disabled="${beendet}"
+                              placeholder="Ihre Antwort hier eingeben..."
+                              th:text="${abgabe != null ? abgabe.freitextAntworten[aufgabe.id] : ''}"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${!beendet}" class="d-grid mb-5">
+            <button type="submit" class="btn btn-primary btn-lg">Antworten abschicken</button>
+        </div>
+    </form>
+
+    <a href="/Student/AlleTests" class="btn btn-secondary mb-5">Zurück zur Testliste</a>
+</div>
+
+<!-- Auto-disable form after end time via JavaScript -->
+<script th:if="${!beendet}"
+        th:inline="javascript">
+    const endZeit = new Date(/*[[${#temporals.format(test.endZeit, "yyyy-MM-dd'T'HH:mm:ss")}]]*/ '');
+    function checkTime() {
+        if (new Date() > endZeit) {
+            const form = document.getElementById('testForm_' + /*[[${test.id}]]*/ 0);
+            if (form) {
+                form.querySelectorAll('input, textarea, button[type=submit]')
+                    .forEach(el => el.disabled = true);
+                const banner = document.createElement('div');
+                banner.className = 'alert alert-warning';
+                banner.textContent = 'Die Bearbeitungszeit ist abgelaufen. Ihre Antworten können nicht mehr geändert werden.';
+                form.prepend(banner);
+            }
+        }
+    }
+    setInterval(checkTime, 5000);
+    checkTime();
+</script>
+</body>
+</html>

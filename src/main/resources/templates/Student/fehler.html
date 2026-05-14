@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Alle Tests – ExamByte</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Student">Exam<span>Byte</span></a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/logout">Abmelden</a>
+        </div>
+    </div>
+</nav>
+
+<div class="page-container">
+    <div class="page-header">
+        <p class="page-eyebrow">Studierende:r</p>
+        <h1>Alle Tests</h1>
+        <p>Übersicht aller verfügbaren Wochentests.</p>
+    </div>
+
+    <table class="table" aria-label="Testübersicht">
+        <thead>
+        <tr>
+            <th scope="col">Test</th>
+            <th scope="col">Startzeit</th>
+            <th scope="col">Endzeit</th>
+            <th scope="col">Max. Punkte</th>
+            <th scope="col">Aktion</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="test : ${tests}">
+            <td th:text="${test.testName}"></td>
+            <td class="mono" th:text="${#temporals.format(test.startZeit, 'dd.MM.yyyy HH:mm')}"></td>
+            <td class="mono" th:text="${#temporals.format(test.endZeit, 'dd.MM.yyyy HH:mm')}"></td>
+            <td th:text="${test.maxPunkte}"></td>
+            <td>
+                <a th:href="@{/Student/Test/{id}(id=${test.id})}" class="btn btn-sm btn-primary">
+                    Öffnen
+                </a>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(tests)}">
+            <td colspan="5" class="text-muted" style="text-align: center; padding: 2rem;">
+                Aktuell sind keine Tests aktiv.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="/Student" class="btn btn-secondary" style="margin-top: 1rem;">← Zurück zur Startseite</a>
+</div>
+
+<script th:src="@{/css/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

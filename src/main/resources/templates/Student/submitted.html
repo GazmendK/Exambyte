@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Test abgegeben – ExamByte</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Student">Exam<span>Byte</span></a>
+    </div>
+</nav>
+
+<div class="centered-page">
+    <div class="centered-card">
+        <div class="big-icon">✅</div>
+        <h2>Test erfolgreich abgegeben</h2>
+        <p class="text-muted" style="margin: 1rem 0 0.5rem;">
+            Deine Antworten wurden gespeichert. Multiple-Choice-Aufgaben werden automatisch ausgewertet.
+        </p>
+        <p class="text-muted">
+            Freitextaufgaben werden von Korrektor:innen bewertet. Die Ergebnisse sind nach dem
+            Veröffentlichungszeitpunkt einsehbar.
+        </p>
+        <a href="/Student" class="btn btn-primary" style="margin-top: 1.5rem;">Zurück zur Startseite</a>
+    </div>
+</div>
+
+<script th:src="@{/css/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

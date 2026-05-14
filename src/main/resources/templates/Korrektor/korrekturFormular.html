@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Test erstellen – ExamByte</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Organisator">Exam<span>Byte</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Navigation umschalten">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link active" href="/Organisator/CreateTest">Test erstellen</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Aufgabenliste">Testvorschau</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Ergebnisstand">Ergebnisse</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Korrekturstand">Korrekturstatus</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Freitextantworten">Freitextantworten</a></li>
+            </ul>
+            <a class="nav-link" href="/logout">Abmelden</a>
+        </div>
+    </div>
+</nav>
+
+<div class="page-container-narrow">
+    <div class="page-header">
+        <p class="page-eyebrow">Organisator</p>
+        <h1>Test erstellen</h1>
+        <p>Lege Titel, Zeitfenster und Veröffentlichungszeitpunkt fest.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Testdaten</div>
+        <div class="card-body">
+            <form th:action="@{/Organisator/CreateTest}" method="post" th:object="${test}">
+                <div class="mb-3">
+                    <label for="testName" class="form-label">Test-Titel</label>
+                    <input type="text" class="form-control" id="testName"
+                           th:field="*{testName}" placeholder="z. B. Wochentest 1" required>
+                </div>
+                <div class="mb-3">
+                    <label for="startZeit" class="form-label">Startzeitpunkt</label>
+                    <input type="datetime-local" class="form-control" id="startZeit"
+                           th:field="*{startZeit}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="endZeit" class="form-label">Endzeitpunkt</label>
+                    <input type="datetime-local" class="form-control" id="endZeit"
+                           th:field="*{endZeit}" required>
+                </div>
+                <div class="mb-4">
+                    <label for="veroeffentlichung" class="form-label">Ergebnis-Veröffentlichungszeitpunkt</label>
+                    <input type="datetime-local" class="form-control" id="veroeffentlichung"
+                           th:field="*{veroeffentlichung}" required>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Test speichern</button>
+                    <a href="/Organisator" class="btn btn-secondary">Abbrechen</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/css/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

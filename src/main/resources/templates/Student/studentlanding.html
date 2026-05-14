@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Startseite – ExamByte</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Student">Exam<span>Byte</span></a>
+        <div class="navbar-nav ms-auto">
+            <span class="nav-link" th:text="${name}"></span>
+            <a class="nav-link" href="/logout">Abmelden</a>
+        </div>
+    </div>
+</nav>
+
+<div class="page-container">
+    <div class="page-header">
+        <p class="page-eyebrow">Studierende:r</p>
+        <h1>Willkommen, <span th:text="${name}">Student</span></h1>
+        <p>Hier findest du alle deine Tests und deinen aktuellen Zulassungsstatus.</p>
+    </div>
+
+    <!-- Zulassungsstatus -->
+    <div th:if="${zulassungsstatus != null}" class="status-banner mb-4"
+         th:classappend="${
+            zulassungsstatus.name() == 'ALLES_GUT'   ? 'status-success' :
+            zulassungsstatus.name() == 'ZUGELASSEN'   ? 'status-success' :
+            zulassungsstatus.name() == 'WARNUNG'       ? 'status-warning' :
+            zulassungsstatus.name() == 'KRITISCH'      ? 'status-warning' :
+            'status-danger'}">
+        <div class="status-banner-icon"
+             th:text="${
+                zulassungsstatus.name() == 'ALLES_GUT'              ? '✅' :
+                zulassungsstatus.name() == 'ZUGELASSEN'              ? '🎓' :
+                zulassungsstatus.name() == 'WARNUNG'                 ? '⚠️' :
+                zulassungsstatus.name() == 'KRITISCH'                ? '🔶' :
+                zulassungsstatus.name() == 'NICHT_ZUGELASSEN'        ? '❌' : '❌'}">
+        </div>
+        <div class="status-banner-text">
+            <h5>Zulassungsstatus</h5>
+            <p th:text="${
+                zulassungsstatus.name() == 'ALLES_GUT'
+                    ? 'Alle bisher bewerteten Tests bestanden – alles auf gutem Kurs.' :
+                zulassungsstatus.name() == 'ZUGELASSEN'
+                    ? 'Zulassung erreicht! Maximal 2 Tests nicht bestanden.' :
+                zulassungsstatus.name() == 'WARNUNG'
+                    ? 'Ein Test nicht bestanden – die nächsten Tests mit Sorgfalt angehen.' :
+                zulassungsstatus.name() == 'KRITISCH'
+                    ? 'Zwei Tests nicht bestanden – Achtung! Ein weiteres Nicht-Bestehen gefährdet die Zulassung.' :
+                zulassungsstatus.name() == 'NICHT_ZUGELASSEN'
+                    ? 'Mehr als zwei Tests nicht bestanden – die Zulassung kann dieses Semester nicht mehr erworben werden.' :
+                zulassungsstatus.name() == 'ENDGUELTIG_NICHT_ZUGELASSEN'
+                    ? 'Zulassung nicht erreichbar – mehr als zwei Tests nicht bestanden.' : ''}">
+            </p>
+        </div>
+    </div>
+
+    <!-- Verfügbare Tests -->
+    <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Verfügbare Tests</h2>
+
+    <div th:if="${#lists.isEmpty(tests)}" class="alert alert-info">
+        Noch keine Tests verfügbar.
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div th:each="test : ${tests}" class="test-card">
+            <div class="test-card-info">
+                <h3 th:text="${test.testName}"></h3>
+                <p class="meta">
+                    Start: <span th:text="${#temporals.format(test.startZeit, 'dd.MM.yyyy HH:mm')}"></span>
+                    &ensp;·&ensp;
+                    Ende: <span th:text="${#temporals.format(test.endZeit, 'dd.MM.yyyy HH:mm')}"></span>
+                </p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0;">
+                <span th:if="${test.istBeendet()}"      class="badge bg-secondary">Beendet</span>
+                <span th:if="${test.istAktiv()}"         class="badge bg-success">Läuft</span>
+                <span th:if="${test.istNochNichtGestartet()}" class="badge bg-warning">Noch nicht gestartet</span>
+
+                <a th:if="${test.istAktiv() or test.istBeendet()}"
+                   th:href="@{/Student/Test/{id}(id=${test.id})}"
+                   class="btn btn-sm btn-primary">Öffnen</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/css/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

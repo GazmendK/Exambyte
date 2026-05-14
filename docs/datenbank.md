@@ -1,0 +1,1 @@
+# Tabellen und Relationen (sobald DB integriert ist)

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Testvorschau – ExamByte</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Organisator"><em>Exam</em>Byte</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
+                aria-controls="nav" aria-expanded="false" aria-label="Navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="/Organisator/CreateTest">Test erstellen</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Aufgabenliste">Testvorschau</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Ergebnisstandseite">Ergebnisse</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Korrekturstandseite">Korrekturstatus</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Freitextantworten">Freitextantworten</a></li>
+            </ul>
+            <a class="nav-link" href="/logout">Abmelden</a>
+        </div>
+    </div>
+</nav>
+<div class="page-container">
+    <div class="page-header">
+        <p class="page-eyebrow">Testvorschau</p>
+        <h1 th:text="${wochenTest.testName}"></h1>
+        <p class="mono" style="font-size:0.78rem;"
+           th:text="'Start: ' + ${#temporals.format(wochenTest.startZeit, 'dd.MM.yyyy HH:mm')} + '  ·  Ende: ' + ${#temporals.format(wochenTest.endZeit, 'dd.MM.yyyy HH:mm')}"></p>
+    </div>
+    <div th:if="${#lists.isEmpty(aufgaben)}" class="alert alert-info">Keine Aufgaben vorhanden.</div>
+    <div th:each="aufgabe, i : ${aufgaben}" class="question-card">
+        <div class="question-number">
+            Aufgabe <span th:text="${i.index + 1}"></span>
+            · <span th:text="${aufgabe.isTestArt() ? 'Multiple Choice' : 'Freitext'}"></span>
+            · <span th:text="${aufgabe.maxPunkte}"></span> Pkt.
+        </div>
+        <div class="question-title" th:text="${aufgabe.titel}"></div>
+        <div th:utext="${aufgabe.beschreibung}" style="font-size:0.9rem; margin-bottom:1rem;"></div>
+        <div th:if="${aufgabe instanceof T(com.example.exambytel9.geschaeftslogik.MultipleChoice)}">
+            <div th:each="opt : ${aufgabe.antwortOptionen}"
+                 style="padding:0.4rem 0.75rem; background:var(--surface-2); border:1px solid var(--border); border-radius:4px; margin-bottom:0.35rem; font-size:0.85rem;"
+                 th:text="${opt}"></div>
+            <div class="alert alert-success" style="margin-top:0.75rem; font-size:0.82rem;">
+                <strong>Korrekte Antworten:</strong> <span th:text="${aufgabe.richtigeAntworten}"></span><br>
+                <span th:text="${aufgabe.erklaerung}"></span>
+            </div>
+        </div>
+        <div th:if="${aufgabe instanceof T(com.example.exambytel9.geschaeftslogik.Freitext)}">
+            <div class="alert alert-success" style="margin-top:0.75rem; font-size:0.82rem;">
+                <strong>Lösungsvorschlag:</strong> <span th:text="${aufgabe.loesungsvorschlag}"></span>
+            </div>
+        </div>
+    </div>
+    <div style="display:flex; gap:0.75rem; margin-top:1rem;">
+        <form th:action="@{/Organisator/Aufgabenliste/Mc}" method="get">
+            <input type="hidden" name="testId" th:value="${wochenTest.id}">
+            <button type="submit" class="btn btn-outline-primary btn-sm">+ MC-Aufgabe</button>
+        </form>
+        <form th:action="@{/Organisator/Aufgabenliste/Text}" method="get">
+            <input type="hidden" name="testId" th:value="${wochenTest.id}">
+            <button type="submit" class="btn btn-outline-secondary btn-sm">+ Freitext-Aufgabe</button>
+        </form>
+        <a href="/Organisator/Aufgabenliste" class="btn btn-secondary btn-sm">← Zurück</a>
+    </div>
+</div>
+</body>
+</html>

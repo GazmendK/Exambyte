@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Aufgaben korrigieren – ExamByte</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Korrektor">Exam<span>Byte</span></a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link active" href="/Korrektor/Aufgaben">Aufgaben</a>
+            <a class="nav-link" href="/logout">Abmelden</a>
+        </div>
+    </div>
+</nav>
+
+<div class="page-container">
+    <div class="page-header">
+        <p class="page-eyebrow">Korrektor</p>
+        <h1>Aufgaben zur Korrektur</h1>
+        <p>Alle noch nicht bewerteten Freitextaufgaben.</p>
+    </div>
+
+    <div th:if="${#lists.isEmpty(aufgaben)}" class="alert alert-success">
+        ✅ Alle Freitextaufgaben sind bereits korrigiert!
+    </div>
+
+    <table th:if="${!#lists.isEmpty(aufgaben)}" class="table" aria-label="Ausstehende Korrekturen">
+        <thead>
+        <tr>
+            <th scope="col">Test</th>
+            <th scope="col">Aufgabe</th>
+            <th scope="col">Studierende:r</th>
+            <th scope="col">Max. Punkte</th>
+            <th scope="col">Aktion</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="k : ${aufgaben}">
+            <td th:text="${k.testName}"></td>
+            <td th:text="${k.aufgabeTitel}"></td>
+            <td th:text="${k.studentLogin}"></td>
+            <td th:text="${k.maxPunkte}"></td>
+            <td>
+                <a th:href="@{/Korrektor/Aufgaben/{testId}/{aufgabeId}(testId=${k.testId}, aufgabeId=${k.aufgabeId})}"
+                   class="btn btn-sm btn-primary">Korrigieren</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script th:src="@{/css/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

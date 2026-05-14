@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Testergebnisse – ExamByte</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Organisator">Exam<span>Byte</span></a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/Organisator/Ergebnisstand">← Zurück</a>
+        </div>
+    </div>
+</nav>
+
+<div class="page-container">
+    <div class="page-header">
+        <p class="page-eyebrow">Ergebnisse</p>
+        <h1 th:text="${test.testName}"></h1>
+        <p class="mono">
+            Max. Punkte: <span th:text="${test.maxPunkte}"></span>
+            &ensp;·&ensp;
+            Ende: <span th:text="${#temporals.format(test.endZeit, 'dd.MM.yyyy HH:mm')}"></span>
+        </p>
+    </div>
+
+    <div th:if="${erfolg}" class="alert alert-success" th:text="${erfolg}"></div>
+    <div th:if="${fehler}"  class="alert alert-danger"  th:text="${fehler}"></div>
+
+    <div th:if="${#lists.isEmpty(ergebnisse)}" class="alert alert-info">
+        Noch keine Abgaben für diesen Test.
+    </div>
+
+    <table th:if="${!#lists.isEmpty(ergebnisse)}" class="table" aria-label="Ergebnisse der Studierenden">
+        <thead>
+        <tr>
+            <th scope="col">Studierende:r</th>
+            <th scope="col">Punkte</th>
+            <th scope="col">Prozent</th>
+            <th scope="col">Ergebnis</th>
+            <th scope="col">Aktion</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="e : ${ergebnisse}">
+            <td th:text="${e.studentLogin}"></td>
+            <td class="mono" th:text="${#numbers.formatDecimal(e.gesamtPunkte, 1, 1)}"></td>
+            <td class="mono"
+                th:text="${#numbers.formatDecimal(test.maxPunkte > 0 ? (e.gesamtPunkte / test.maxPunkte * 100) : 0, 1, 1) + '%'}">
+            </td>
+            <td>
+                <span th:if="${e.bestanden}"    class="badge bg-success">Bestanden</span>
+                <span th:if="${!e.bestanden}"   class="badge bg-danger">Nicht bestanden</span>
+                <div th:if="${e.begruendung != null}"
+                     class="text-muted" style="font-size: 0.78rem; margin-top: 0.2rem;"
+                     th:text="${'Begründung: ' + e.begruendung}"></div>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-outline-danger"
+                        th:data-student="${e.studentLogin}"
+                        th:data-testid="${test.id}"
+                        onclick="zeigeNichtBestandenModal(this)">
+                    Nicht bestanden markieren
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="nichtBestandenModal" tabindex="-1"
+     aria-labelledby="nichtBestandenLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: var(--radius-lg); border: 1px solid var(--border);">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border);">
+                <h5 class="modal-title" id="nichtBestandenLabel"
+                    style="font-family: var(--font-display); font-weight: 500;">
+                    Test als nicht bestanden markieren
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+            </div>
+            <form id="nichtBestandenForm" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="begruendung" class="form-label">Begründung</label>
+                        <textarea class="form-control" id="begruendung" name="begruendung"
+                                  rows="3" required
+                                  placeholder="Begründung für das Nicht-Bestehen eingeben..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid var(--border);">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <button type="submit" class="btn btn-danger">Bestätigen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/css/bootstrap.bundle.min.js}"></script>
+<script>
+    function zeigeNichtBestandenModal(btn) {
+        const student = btn.getAttribute('data-student');
+        const testId  = btn.getAttribute('data-testid');
+        document.getElementById('nichtBestandenForm').action =
+            '/Organisator/Ergebnisstand/' + testId + '/' + student + '/nichtbestanden';
+        new bootstrap.Modal(document.getElementById('nichtBestandenModal')).show();
+    }
+</script>
+</body>
+</html>

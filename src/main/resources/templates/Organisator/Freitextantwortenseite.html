@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Freitextantworten – ExamByte</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Organisator"><em>Exam</em>Byte</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
+                aria-controls="nav" aria-expanded="false" aria-label="Navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="/Organisator/CreateTest">Test erstellen</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Aufgabenliste">Testvorschau</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Ergebnisstandseite">Ergebnisse</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Korrekturstandseite">Korrekturstatus</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Freitextantworten">Freitextantworten</a></li>
+            </ul>
+            <a class="nav-link" href="/logout">Abmelden</a>
+        </div>
+    </div>
+</nav>
+<div class="page-container">
+    <div class="page-header">
+        <p class="page-eyebrow">Organisator</p>
+        <h1>Freitextantworten</h1>
+        <p>Alphabetisch sortiert – ähnliche Antworten erscheinen nebeneinander.</p>
+    </div>
+    <div th:if="${#lists.isEmpty(freitextAntworten)}" class="alert alert-info">Keine Freitextantworten vorhanden.</div>
+    <table th:if="${!#lists.isEmpty(freitextAntworten)}" class="table" aria-label="Freitextantworten">
+        <thead>
+        <tr>
+            <th scope="col">Test</th>
+            <th scope="col">Aufgabe</th>
+            <th scope="col">Studierende:r</th>
+            <th scope="col">Antwort</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="k : ${freitextAntworten}">
+            <td th:text="${k.test().testName}"></td>
+            <td th:text="${k.aufgabe().titel}"></td>
+            <td class="mono" th:text="${k.abgabe().studentLogin}"></td>
+            <td><pre class="answer-pre" th:text="${k.antwort()}"></pre></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

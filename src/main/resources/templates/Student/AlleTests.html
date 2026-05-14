@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard – ExamByte</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Organisator">Exam<span>Byte</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Navigation umschalten">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="/Organisator/CreateTest">Test erstellen</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Aufgabenliste">Testvorschau</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Ergebnisstand">Ergebnisse</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Korrekturstand">Korrekturstatus</a></li>
+                <li class="nav-item"><a class="nav-link" href="/Organisator/Freitextantworten">Freitextantworten</a></li>
+            </ul>
+            <a class="nav-link" href="/logout">Abmelden</a>
+        </div>
+    </div>
+</nav>
+
+<div class="page-container">
+    <div class="page-header">
+        <p class="page-eyebrow">Organisator</p>
+        <h1>Dashboard</h1>
+        <p>Verwalte Tests, verfolge Korrekturen und sieh Ergebnisse ein.</p>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="dash-card">
+            <span class="dash-card-label">Testverwaltung</span>
+            <h3>Test erstellen</h3>
+            <p>Lege einen neuen Wochentest mit Fragen und Zeitfenstern an.</p>
+            <a href="/Organisator/CreateTest" class="btn btn-primary">Test erstellen</a>
+        </div>
+        <div class="dash-card">
+            <span class="dash-card-label">Vorschau</span>
+            <h3>Testvorschau</h3>
+            <p>Sieh alle Tests und Aufgaben vor dem Startzeitpunkt ein.</p>
+            <a href="/Organisator/Aufgabenliste" class="btn btn-secondary">Testvorschau</a>
+        </div>
+        <div class="dash-card">
+            <span class="dash-card-label">Ergebnisse</span>
+            <h3>Ergebnisstand</h3>
+            <p>Vergleiche Testergebnisse aller Studierenden und exportiere als CSV.</p>
+            <a href="/Organisator/Ergebnisstand" class="btn btn-secondary">Ergebnisse</a>
+        </div>
+        <div class="dash-card">
+            <span class="dash-card-label">Korrektur</span>
+            <h3>Korrekturstatus</h3>
+            <p>Erkenne Verzögerungen bei der Freitextkorrektur rechtzeitig.</p>
+            <a href="/Organisator/Korrekturstand" class="btn btn-warning">Korrekturstatus</a>
+        </div>
+        <div class="dash-card">
+            <span class="dash-card-label">Abgaben</span>
+            <h3>Freitextantworten</h3>
+            <p>Sortierte Übersicht zur schnellen Erkennung ähnlicher Abgaben.</p>
+            <a href="/Organisator/Freitextantworten" class="btn btn-info">Antworten anzeigen</a>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/css/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
