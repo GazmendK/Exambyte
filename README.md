@@ -1,65 +1,91 @@
-# ExamByte - Testing System for the Programming Practical 📝🎓
+# ExamByte
 
-Welcome to **ExamByte**, the modern testing system for exam admission in the programming practical! This web application replaces Ilias and offers comprehensive functions for test execution, correction, and result presentation.
+Ein webbasiertes Testsystem für die Klausurzulassung im Programmierpraktikum, entwickelt mit Java und Spring Framework. ExamByte löst Ilias als Testsystem ab und unterstützt die Testausführung, manuelle Korrektur von Freitextaufgaben sowie die Ergebnisdarstellung für Studierende, Korrektor:innen und Organisator:innen.
 
----
 
-## ✨ Key Features
+## Einleitung
 
-### 👨‍🎓 For Students
-* **Test Overview:** All available tests at a glance.
-* **Test Taking:** Work on multiple-choice and free-text questions.
-* **Result Display:** See your achieved points after they have been published.
-* **Admission Status:** A clear overview of your current admission status.
+ExamByte wurde entwickelt, um Ilias als Testsystem abzulösen. Die Anwendung unterstützt:
 
-### 👩‍🏫 For Tutors
-* **Free-Text Correction:** Manually grade free-text answers.
-* **Provide Feedback:** Give constructive feedback on submissions.
-* **Task Overview:** Quickly access all tasks that need to be graded.
+- Testausführung durch Studierende
+- Manuelle Korrektur von Freitextaufgaben durch Korrektor:innen
+- Ergebnisdarstellung für Studierende, Korrektor:innen und Organisator:innen
 
-### 👨‍💼 For Organizers
-* **Test Management:** Create and edit tests.
-* **Question Creation:** Add multiple-choice and free-text questions.
-* **Result Analysis:** Get overviews and statistics on test results.
-* **Correction Monitoring:** Track the progress of the grading process.
 
----
+## Implementierung
 
-## 🛠️ Technologies
+Die Anwendung wird als Webanwendung in Java mit dem Spring Framework umgesetzt. Die Architektur folgt dem Onion-Architekturmuster, das durch ArchUnit-Tests und Gradle-Submodule abgesichert wird.
 
-* **Spring Framework:** Backend development with Spring Boot.
-* **Java:** The main programming language.
-* **OAuth2:** Authentication via GitHub.
-* **Thymeleaf:** Templating for the web interface.
-* **Spring Security:** Role-based access control.
-* **In-Memory Database:** Temporary data storage (to be replaced by a persistent DB later).
+- **Build-Tool:** Gradle
+- **Sicherheit:** Spring Security + OAuth2 (GitHub)
+- **Templating:** Thymeleaf
 
----
+## Funktionen
 
-## 📁 Project Structure
+### Userverwaltung
 
-The application follows a clean **Onion Architecture**:
+- **Authentifizierung:** Über GitHub OAuth
+- **Autorisierung:** Drei Rollen – Studierende, Korrektor:innen, Organisator:innen
 
-### 🧅 Business Logic
-* `WochenTest.java`: Core model for tests.
-* `Aufgabe.java`: Base class for tasks.
-* `MultipleChoice.java`: Implementation of multiple-choice questions.
-* `Freitext.java`: Implementation of free-text questions.
-* `User.java`: Base class for users.
-* `Student.java`, `Korrektor.java`, `Organisator.java`: Role-specific user classes.
+Die Rollen werden aus einer Konfigurationsdatei (`application.yml` / `application.properties`) beim Start gelesen.
 
-### 🌐 Web Controllers
-* `OrganisatorControllerSeite.java`: Endpoints for organizers.
-* `KorrektorControllerSeite.java`: Endpoints for tutors.
-* `StudentController.java`: Endpoints for students.
-* `ControllerT1.java`: General endpoints.
+| Rolle | Berechtigungen |
+|---|---|
+| Studierende | Testdurchführung, eigene Ergebnisse einsehen, Zulassungsstatus einsehen |
+| Korrektor:innen | Zugriff auf zugeteilte Freitextantworten, Punktevergabe und Feedback |
+| Organisator:innen | Vollzugriff: Test-Erstellung, alle Antworten, Punkte-Änderungen, Test als „nicht bestanden" markieren, CSV-Export, Übersichten |
 
-### 🗄️ Data Access
-* `InMemoryTestRepository.java`: Temporary test storage.
-* `TestService.java`: Service layer for test operations.
+### Testtypen
 
-### 🔐 Security
-* `SecurityConfiguration.java`: Security configuration.
-* `AuthenticationRedirect.java`: Role-based redirection after login.
-* `AppUserService.java`: User management with GitHub OAuth.
+**Multiple-Choice (MC)**
 
+Fragestellung, Antwortmöglichkeiten, maximale Punktzahl, korrekte Antworten, Lösungserklärung. Korrekte Antwort und Erklärung werden nach dem Endzeitpunkt sichtbar.
+
+**Freitextfragen**
+
+Fragestellung, maximale Punktzahl, ein optionaler Lösungsvorschlag. Der Lösungsvorschlag wird nach dem Endzeitpunkt sichtbar. Manuelle Bewertung durch Korrektor:innen oder Organisator:innen. Nicht-leere Einreichungen mit weniger als der Maximalpunktzahl benötigen zwingend ein Feedback.
+
+**Weitere Organisator:innen-Funktionen**
+
+- Korrekturstandsübersicht: Welche Aufgaben noch nicht korrigiert wurden
+- Ergebnisübersicht pro Test: Alle Studierenden-Ergebnisse, Navigation zu individuellen Ergebnissen
+- Freitextantworten-Ansicht: Alle Antworten pro Freitextaufgabe, sortiert, um identische/ähnliche Abgaben zu erkennen
+- CSV-Export der Testergebnisse
+
+## Installation & Betrieb
+
+### Voraussetzungen
+
+- Java 17 oder höher
+- Docker & Docker Compose (für Container-Betrieb)
+- GitHub OAuth2 App (Client-ID und Secret)
+
+### Build
+
+```bash
+./gradlew clean bootJar
+```
+
+### Start (lokal)
+
+```bash
+java -jar build/libs/exambyte-l9-0.0.1-SNAPSHOT.jar
+```
+
+### Start (Docker)
+
+```bash
+docker-compose up --build
+```
+
+### Konfiguration
+
+Umgebungsvariablen setzen oder `application.properties` anpassen:
+
+```properties
+spring.security.oauth2.client.registration.github.client-id=${CLIENT_ID}
+spring.security.oauth2.client.registration.github.client-secret=${CLIENT_SECRET}
+
+app.rollen.organisatoren=github-username-orga1,github-username-orga2
+app.rollen.korrektoren=github-username-korrektor1,github-username-korrektor2
+```
